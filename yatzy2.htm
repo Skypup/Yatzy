@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html lang="sv-SE" xml:lang="sv-SE" xmlns="http://www.w3.org/1999/xhtml"> 
+ 
+<head> 
+<title>YatzyAI</title> 
+<meta http-equiv="content-type" content="text/html;charset=iso-8859-1" /> 
+<link rel="stylesheet" href="styleSheet.css" type="text/css" /> 
+ 
+ 
+<script type="text/javascript"> 
+
+/*
+function sortNumber(a,b)
+{
+return a - b;
+}
+*/
+
+
+function tryAllCombos()
+{
+//testa varje alternativ av tärningar att hålla.
+hold = [0,0,0,0,0];
+bestEV = 0;
+
+//document.write(hold + "<br />");
+					
+
+//testa varje möjligt nytt kast.
+
+//håll 0.
+
+evCount=0;
+ev[evCount]=0;
+for(var d0=1; d0<=6; d0++)
+	{
+	diceTemp[0]=d0;
+
+	for(var d1=1; d1<=6; d1++)
+		{
+		diceTemp[1]=d1;
+
+		for(var d2=1; d2<=6; d2++)
+			{
+			diceTemp[2]=d2;
+
+			for(var d3=1; d3<=6; d3++)
+				{
+				diceTemp[3]=d3;
+
+				for(var d4=1; d4<=6; d4++)
+					{
+					diceTemp[4]=d4;
+
+					if (diceTemp[0] == 6 && diceTemp[4] == 6)
+					document.write("<br />" + diceTemp + "<br />");
+
+					checkForBestValue();
+
+					}
+				}
+			}
+		}
+	}
+ev[evCount]=ev[evCount]/7776;
+
+//håll 1.
+
+/*
+evCount=1;
+ev[evCount]=0;
+
+diceTemp[0]=dice[0];
+for(var d1=1; d1<=6; d1++)
+	{
+	diceTemp[1]=d1;
+
+	for(var d2=1; d2<=6; d2++)
+		{
+		diceTemp[2]=d2;
+
+		for(var d3=1; d3<=6; d3++)
+			{
+			diceTemp[3]=d3;
+
+			for(var d4=1; d4<=6; d4++)
+				{
+				diceTemp[4]=d4;
+
+				if (diceTemp[0] == diceTemp[4] == 6)
+				document.write("<br />" + diceTemp + "<br />");
+
+				checkForBestValue();
+
+				}
+			}
+		}
+	}
+
+ev[evCount]=ev[evCount]/1296;
+*/
+
+}
+
+
+
+
+function checkForBestValue()
+{
+
+//sortera tärningarna
+for (var tra=0; tra<5; tra++)
+	{
+	diceTempSort[tra] = diceTemp[tra];
+	}
+diceTempSort = diceTempSort.sort();
+
+
+//se hur mycket värde det blir på varje kombo, i varje möjligt drag.
+
+					//ettor till sexor
+for(var ettsex=0; ettsex<6; ettsex++)
+{
+points[ettsex]=0;
+for(var badam=0; badam<5; badam++)
+	{
+	if (diceTemp[badam]==ettsex+1)
+		points[ettsex] += ettsex+1;
+	}
+if (protokoll[ettsex]==null)
+	ev[evCount]+= (1/initChance[ettsex])*(points[ettsex]/maxPoints[ettsex])*points[ettsex]*(points[ettsex]/(ettsex+1)/3)*factor[ettsex];
+}
+
+					//ettpar
+points[6]=0;
+//diceTempSort = diceTemp;
+//diceTempSort = diceTempSort.sort();
+//if (hold[0] == hold[1] == hold[2] == hold[3] == hold[4] == 0)
+//document.write(diceTempSort + "<br />");
+
+for (var ettpar=1; ettpar<5; ettpar++)
+	{
+	if (diceTempSort[ettpar]==diceTempSort[ettpar-1])
+		points[6]=diceTempSort[ettpar]*2;
+	}
+if (protokoll[6]==null)
+	ev[evCount]+= (1/initChance[6])*(points[6]/maxPoints[6])*points[6]*factor[6];
+
+
+					//tvåpar
+points[7]=0;
+for(var par1=1; par1<3; par1++)
+	{
+	if (diceTempSort[par1]==diceTempSort[par1-1])
+		{
+		for(var par2=3; par2<5; par2++)
+			{
+			if (diceTempSort[par2]==diceTempSort[par2-1] && diceTempSort[1]!=diceTempSort[3])
+				points[7]=(diceTempSort[1]+diceTempSort[3])*2;
+			}
+		}
+	}
+if (protokoll[7]==null)
+	ev[evCount]+= (1/initChance[7])*(points[7]/maxPoints[7])*points[7]*factor[7];
+
+
+					//triss
+points[8]=0;
+for (var triss=2; triss<5; triss++)
+	{
+	if (diceTempSort[triss]==diceTempSort[triss-2])
+		points[8]=diceTempSort[2]*3;
+	}
+if (protokoll[8]==null)
+	ev[evCount]+= (1/initChance[8])*(points[8]/maxPoints[8])*points[8]*factor[8];
+
+
+					//fyrtal
+points[9]=0;
+for (var quads=3; quads<5; quads++)
+	{
+	if (diceTempSort[quads]==diceTempSort[quads-3])
+		points[9]=diceTempSort[2]*4;
+	}
+if (protokoll[9]==null)
+	ev[evCount]+= (1/initChance[9])*(points[9]/maxPoints[9])*points[9]*factor[9];
+
+
+					//liten stege
+points[10]=0;
+if (diceTempSort[0]==1 && diceTempSort[1]==2 && diceTempSort[2]==3 && diceTempSort[3]==4 && diceTempSort[4]==5)
+	points[10]=15;
+if (protokoll[10]==null)
+	ev[evCount]+= (1/initChance[10])*(points[10]/maxPoints[10])*points[10]*factor[10];
+
+
+					//stor stege
+points[11]=0;
+if (diceTempSort[0]==2 && diceTempSort[1]==3 && diceTempSort[2]==4 && diceTempSort[3]==5 && diceTempSort[4]==6)
+	points[10]=20;
+if (protokoll[11]==null)
+	ev[evCount]+= (1/initChance[11])*(points[11]/maxPoints[11])*points[11]*factor[11];
+
+
+					//kåk
+points[12]=0;
+if (diceTempSort[1]==diceTempSort[0] && diceTempSort[4]==diceTempSort[3] && diceTempSort[4]!=diceTempSort[0] && (diceTempSort[2]==diceTempSort[0] || diceTempSort[2]==diceTempSort[4]))
+	{
+	for (var house=0; house<5; house++)
+		{
+		points[12] += diceTempSort[house];
+		}
+	}
+if (protokoll[12]==null)
+	ev[evCount]+= (1/initChance[12])*(points[12]/maxPoints[12])*points[12]*factor[12];
+
+
+					//chans
+points[13]=0;
+for (var chans=0; chans<5; chans++)
+		{
+		points[13] += diceTempSort[chans];
+		}
+if (protokoll[13]==null)
+	ev[evCount]+= (1/initChance[13])*(points[13]/maxPoints[13])*points[13]*factor[13];
+
+
+					//yatzy
+points[14]=0;
+	if (diceTempSort[4]==diceTempSort[0])
+		points[14]=50;
+if (protokoll[14]==null)
+	ev[evCount]+= (1/initChance[14])*(points[14]/maxPoints[14])*points[14]*factor[14];
+
+}
+
+
+
+
+var dice = new Array(4);
+var diceTemp = [0,0,0,0,0];
+var diceTempSort = [0,0,0,0,0];
+var hold = [0,0,0,0,0];
+var ev = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var bestEV = 0;
+var bestHold = [0,0,0,0,0];
+var evCount = 0;
+var points = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var maxPoints = [3, 6, 9, 12, 15, 18, 12, 22, 18, 24, 15, 20, 28, 30, 50];
+var initChance = [(250/7776), (250/7776), (250/7776), (250/7776), (250/7776), (250/7776), (4651/7776), (2700/7776), (1656/7776), (156/7776), (120/7776), (120/7776), (300/7776), 1, (6/7776)];
+var protokoll = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+var factor = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+var choose = 0;
+
+
+//kasta tärningarna
+for(var i=0; i<5; i++)
+	{
+	dice[i] = Math.floor(Math.random()*6)+1;
+	}
+document.write(dice + "<br />");
+
+tryAllCombos();
+
+document.write(ev + "<br />");
+
+document.write(bestHold + "<br />");
+
+//kasta för andra gången
+for(var i=0; i<5; i++)
+	{
+	if (bestHold[i]==0)
+		dice[i] = Math.floor(Math.random()*6)+1;
+	}
+document.write(dice + "<br />");
+
+tryAllCombos();
+
+document.write(bestHold + "<br />");
+
+//kasta för tredje gången
+for(var i=0; i<5; i++)
+	{
+	if (bestHold[i]==0)
+		dice[i] = Math.floor(Math.random()*6)+1;
+	}
+document.write(dice + "<br />");
+
+//välj fält i protokollet.
+
+diceTemp = dice;
+checkForBestValue();
+bestEV = 0;
+
+for (var i=0; i<6; i++)
+	{
+	document.write(points[i] + "<br />");
+	if (protokoll[i]==null && (1/initChance[i])*(points[i]/maxPoints[i])*points[i]*(points[i]/(i+1)/3)*factor[i] > bestEV)
+		{
+		bestEV = (1/initChance[i])*(points[i]/maxPoints[i])*points[i]*(points[i]/(i+1)/3)*factor[i];
+		choose = i;
+		}
+	}
+
+for (var i=6; i<15; i++)
+	{
+	document.write(points[i] + "<br />");
+	if (protokoll[i]==null && (1/initChance[i])*(points[i]/maxPoints[i])*points[i]*factor[i] > bestEV)
+		{
+		bestEV = (1/initChance[i])*(points[i]/maxPoints[i])*points[i]*(points[i]/(i+1)/3)*factor[i];
+		choose = i;
+		}
+	}
+
+protokoll[choose] = points[choose];
+
+document.write(protokoll);
+
+
+</script>
+</head>
+
+<body>
+
+</body>
+</html>
